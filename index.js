@@ -10,46 +10,70 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(logger('dev'));
 
-let products = [];
+let todoList = [];
 
-app.get('/products', function (req, res) {
-  res.send(products);
+//todoList
+app.get('/task-management', function (req, res) {
+  if (todoList.length === 0) {
+    res.send({ message: 'No tasks found' });
+  } else {
+    res.send(todoList);
+  }
 });
 
-app.post('/product', function (req, res) {
-  const productDetails = req.body;
+//add to todolist
+app.post('/newTask', function (req, res) {
+  const newTask = req.body;
   const id = uid.v4();
-  products.push({
+  todoList.push({
     id,
-    name: productDetails.name,
-    price: productDetails.price,
+    task: newTask.task,
+    description: newTask.description,
+    dueDate: newTask.dueDate,
+    status: newTask.status,
   });
-  res.send('product added succesfully');
+  res.send('Task added to TodoList');
 });
 
-app.get('/product/:id', function (req, res) {
-  const productId = req.params.id;
-  const productDetails = products.find((product) => product.id == productId);
+app.get('/newTask/:id', function (req, res) {
+  const newTaskId = req.params.id;
+  const newTask = todoList.find((newTask) => newTask.id == newTaskId);
 
-  res.send(productDetails);
+  res.send(newTask);
 });
 
-app.put('/product/:id', (req, res) => {
-  const updateProductDetails = req.body;
-  const productId = req.params.id;
+//update
+app.put('/newTask/:id', (req, res) => {
+  const updateTask = req.body;
+  const TaskId = req.params.id;
 
-  for (let i = 0; i < products.length; i++) {
-    if (products[i].id == productId) {
-      products[i].name = updateProductDetails.name;
-      products[i].price = updateProductDetails.price;
+  for (let i = 0; i < todoList.length; i++) {
+    if (todoList[i].id == TaskId) {
+      todoList[i].task = updateTask.task;
+      todoList[i].dueDate = updateTask.dueDate;
+      todoList[i].description = updateTask.description;
     }
   }
-  res.send('product updated successfully');
+  res.send('TodoList updated successfully');
 });
-app.delete('/product/:id', (req, res) => {
-  const productId = req.params.id;
-  products = products.filter((product) => product.id != productId);
-  res.send('product deleted');
+
+//update the status of a task by id
+app.patch('/newTask/:id', (req, res) => {
+  const updateTask = req.body;
+  const TaskId = req.params.id;
+  for (let i = 0; i < todoList.length; i++) {
+    if (todoList[i].id === TaskId) {
+      todoList[i].status = updateTask.status;
+      break;
+    }
+  }
+  res.send({ message: 'Task status updated successfully' });
+});
+
+app.delete('/newTask/:id', (req, res) => {
+  const TaskId = req.params.id;
+  todoList = todoList.filter((newTask) => newTask.id != TaskId);
+  res.send('Task deleted');
 });
 
 app.listen(3001, function () {
