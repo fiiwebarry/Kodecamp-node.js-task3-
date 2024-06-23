@@ -1,0 +1,27 @@
+GET http://localhost:3001/products
+
+
+###
+
+POST http://localhost:3001/product
+Content-Type: application/json
+
+{
+"name": "tone",
+"price": 86000
+}
+
+###
+GET http://localhost:3001/product/0255a554-91cb-4974-a76d-868f609df1d1
+
+###
+PUT http://localhost:3001/product/0255a554-91cb-4974-a76d-868f609df1d1
+Content-Type: application/json
+
+{
+ "name": "android",
+ "price" : "44440"}
+
+###
+DELETE  http://localhost:3001/product/0255a554-91cb-4974-a76d-868f609df1d1
+
